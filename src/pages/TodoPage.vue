@@ -4,174 +4,104 @@ import TodoList from '../components/TodoList.vue'
 import TodoDetails from '../components/TodoDetails.vue'
 import DeleteModal from '../components/DeleteModal.vue'
 
-import { ref, reactive, computed, onMounted } from 'vue'
+import { ref, reactive, computed } from 'vue'
+import { useTodoStore } from '../stores/todo'
 
-const completed = ref([])
+const todoStore = useTodoStore()
+
 const selectedTaskId = ref(null)
-const modal = reactive({ open: false, id: null, fromList: null })
-const tasks = ref([
-  {
-    id: 1,
-    title: "todo1",
-    completed: false,
-    subtasks: [],
-    notes: [],
-    timeSpent: 0,
-  },
-  {
-    id: 2,
-    title: "todo2",
-    completed: false,
-    subtasks: [],
-    notes: [],
-    timeSpent: 0,
-  }
-])
+const modal = reactive({ open: false, id: null })
 
-function addTask(title) {
-  const newTask = {
-    id: Date.now(),
-    title,
-    completed: false,
-    subtasks: [],
-    notes: [],
-    timeSpent: 0
-  }
-  tasks.value.push(newTask)
-  selectedTaskId.value = newTask.id
-  save()
+function handleAddTask(title) {
+    const newId = todoStore.addTask(title)
+    if (newId) selectedTaskId.value = newId
 }
 
 function selectTask(id) {
-  selectedTaskId.value = id
+    selectedTaskId.value = id
 }
 
-function showDeleteModal(id, fromList = 'tasks') {
-  modal.open = true
-  modal.id = id
-  modal.fromList = fromList
+function showDeleteModal(id) {
+    modal.open = true
+    modal.id = id
 }
 
 function confirmDelete() {
-  if (modal.fromList === 'tasks') {
-    const idx = tasks.value.findIndex(t => t.id === modal.id)
-    if (idx !== -1) tasks.value.splice(idx, 1)
-  } else {
-    const idx = completed.value.findIndex(t => t.id === modal.id)
-    if (idx !== -1) completed.value.splice(idx, 1)
-  }
-  
-  // Если удаляем выбранную задачу, сбрасываем выбор
-  if (selectedTaskId.value === modal.id) {
-    selectedTaskId.value = null
-  }
-  
-  modal.open = false
-  modal.id = null
-  modal.fromList = null
-  save()
+    todoStore.deleteTask(modal.id)
+
+    if (selectedTaskId.value === modal.id) {
+        selectedTaskId.value = null
+    }
+
+    closeDeleteModal()
 }
 
 function closeDeleteModal() {
-  modal.open = false
-  modal.id = null
-  modal.fromList = null
+    modal.open = false
+    modal.id = null
 }
 
-function toggleComplete(id) {
-  const idx = tasks.value.findIndex(t => t.id === id)
-  if (idx !== -1) {
-    const task = tasks.value[idx]
-    task.completed = true
-    completed.value.push(task)
-    tasks.value.splice(idx, 1)
-    
-    // Если завершаем выбранную задачу, сбрасываем выбор
-    if (selectedTaskId.value === id) {
-      selectedTaskId.value = null
-    }
-    
-    save()
-  }
+// переключаем задачу сделано/не сделано (check)
+function handleToggle(id) {
+    todoStore.toggleComplete(id)
+    if (selectedTaskId.value === id) selectedTaskId.value = null
 }
-
-function uncompleteTask(id) {
-  const idx = completed.value.findIndex(t => t.id === id)
-  if (idx !== -1) {
-    const task = completed.value[idx]
-    task.completed = false
-    tasks.value.push(task)
-    completed.value.splice(idx, 1)
-    save()
-  }
+function handleUncomplete(id) {
+    todoStore.uncompleteTask(id)
 }
 
 const currentTask = computed(() => {
-  const all = [...tasks.value, ...completed.value];
-  return all.find(t => t.id === selectedTaskId.value) || null;
-});
-
-function save() {
-  localStorage.setItem('tasks', JSON.stringify(tasks.value))
-  localStorage.setItem('completed', JSON.stringify(completed.value))
-}
-
-function loadFromStorage() {
-  if (localStorage.getItem('tasks')) {
-    const storedTasks = JSON.parse(localStorage.getItem('tasks'))
-    tasks.value.splice(0, tasks.value.length, ...storedTasks);
-  }
-  if (localStorage.getItem('completed')) {
-    const storedCompleted = JSON.parse(localStorage.getItem('completed'))
-    completed.value.splice(0, completed.value.length, ...storedCompleted);
-  }
-}
-
-onMounted(() => {
-  loadFromStorage()
+    return todoStore.allTasks.find(t => t.id === selectedTaskId.value) || null
 })
+
+function handleAutoSave() {
+    // пустота тк pinia сама всё делает с помощью persist
+}
 </script>
 
 <template>
-  <Header @add="addTask" />
+  <Header @add="handleAddTask" />
+  
   <div class="board">
     <!-- Tasks -->
     <div class="card" id="todo-list">
       <h2 class="card__title">Tasks</h2>
+      <!-- Берем задачи из стора -->
       <TodoList
-        :tasks="tasks"
+        :tasks="todoStore.tasks"
         :selectedTaskId="selectedTaskId"
         @select="selectTask"
         @remove="showDeleteModal"
-        @toggle="toggleComplete"
+        @toggle="handleToggle"
       />
     </div>
 
-    <!-- Current Task -->
+    <!-- Current Task Details -->
     <div class="card">
       <TodoDetails 
         v-if="currentTask" 
         :task="currentTask" 
-        @update="save" 
+        @update="handleAutoSave" 
       />
       <div v-else class="no-task-selected" id="no-task-selected">
         Choose or create a task
       </div>
     </div>
 
-    <!-- Done -->
+    <!-- Done Tasks -->
     <div class="card" id="done-list">
       <h2 class="card__title">Done</h2>
+      <!-- Берем выполненные из стора -->
       <TodoList
-        :tasks="completed"
+        :tasks="todoStore.completed"
         :selectedTaskId="selectedTaskId"
         @select="selectTask"
-        @remove="id => showDeleteModal(id, 'completed')"
-        @toggle="uncompleteTask"
+        @remove="showDeleteModal"
+        @toggle="handleUncomplete"
       />
     </div>
 
-    <!-- Модалка -->
+    <!-- Modal -->
     <DeleteModal
       :isOpen="modal.open"
       @confirm="confirmDelete"

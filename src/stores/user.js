@@ -35,7 +35,7 @@ export const useUserStore = defineStore('user', () => {
     }
 
     function logout() {
-        currentUser.value - null
+        currentUser.value = null
     }
 
     return { users, currentUser, register, login, logout }

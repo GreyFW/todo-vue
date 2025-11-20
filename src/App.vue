@@ -39,5 +39,7 @@ nav a.router-link-active {
   padding: 5px 10px;
   border-radius: 999px;
   border: 2px solid #ccdaff;
+  border-bottom: 2px solid #163ba1;
+  border-left: 2px solid #163ba1;
 }
 </style>

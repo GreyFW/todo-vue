@@ -1,8 +1,8 @@
 <script setup>
-import Header from './components/Header.vue'
-import TodoList from './components/TodoList.vue'
-import TodoDetails from './components/TodoDetails.vue'
-import DeleteModal from './components/DeleteModal.vue'
+import Header from '../components/Header.vue'
+import TodoList from '../components/TodoList.vue'
+import TodoDetails from '../components/TodoDetails.vue'
+import DeleteModal from '../components/DeleteModal.vue'
 
 import { ref, reactive, computed, onMounted } from 'vue'
 
@@ -181,5 +181,5 @@ onMounted(() => {
 </template>
 
 <style>
-@import "./scss/main.scss";
+@import "../scss/main.scss";
 </style>

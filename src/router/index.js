@@ -1,8 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import TodoPage from '../views/TodoPage.vue'
-import LoginPage from '../views/LoginPage.vue'
-import RegisterPage from '../views/RegisterPage.vue'
-import AboutPage from '../views/AboutPage.vue'
+import TodoPage from '../pages/TodoPage.vue'
+import LoginPage from '../pages/LoginPage.vue'
+import RegisterPage from '../pages/RegisterPage.vue'
+import AboutPage from '../pages/AboutPage.vue'
 
 const routes = [
   { path: '/', name: 'Todo', component: TodoPage },

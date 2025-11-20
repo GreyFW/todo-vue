@@ -11,7 +11,7 @@ $clr-light-border: rgba(0, 0, 0, 0.12) !default;
 $clr-dark-bg: #030c22 !default;
 $clr-dark-cards: #303463 !default;
 $clr-accent-dark: #5c63ad !default;
-$clr-accent-dark-hover: #4c8fe0 !default;
+$clr-accent-dark-hover: #4257b6 !default;
 $clr-dark-txt-main: #e7ebff !default;
 $clr-dark-txt-secondary: #9aa6d1 !default;
 $clr-dark-border: #25396e !default;
@@ -97,3 +97,11 @@ $z-modal: 1100 !default;
 $focus-ring: rgba(84, 130, 255, 0.35) !default;
 $transition-fast: 150ms !default;
 $transition-base: 220ms !default;
+
+// ===== NAVIGATION (lab7 upd)
+$clr-nav-active-text: #163ba1 !default;
+$clr-nav-active-bg: #98b6ff !default;
+$clr-nav-active-border: #ccdaff !default;
+
+$clr-link-text: #5482ff !default;
+$clr-link-text-hover: #3a63d1 !default;

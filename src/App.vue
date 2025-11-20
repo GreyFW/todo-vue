@@ -38,49 +38,6 @@ function handleLogout() {
   </main>
 </template>
 
-<style scoped>
-nav {
-  padding: 4px;
-  text-align: center;
-  background-color: #5482ff;
-  border-bottom: 4px solid #98b6ff;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-nav a {
-  margin: 0 10px;
-  text-decoration: none;
-  color: #fff;
-  font-weight: bold;
-  padding: 14px;
-}
-
-nav a.router-link-active {
-  color: #163ba1;
-  background-color: #98b6ff;
-  padding: 5px 10px;
-  border-radius: 999px;
-  border: 2px solid #ccdaff;
-  border-bottom: 2px solid #163ba1;
-  border-left: 2px solid #163ba1;
-}
-
-.user-email {
-  color: white;
-  margin-left: 32px;
-  margin-right: 10px;
-  font-size: 1rem;
-  opacity: 0.9;
-}
-.logout-btn {
-  cursor: pointer;
-  border: 2px solid rgba(255, 0, 0, 0.25);
-  border-radius: 8px;
-  padding: 5px 10px !important;
-}
-.logout-btn:hover {
-  background: rgba(255, 0, 0, 0.5);
-}
+<style lang="scss">
+@import "./scss/components/nav";
 </style>
